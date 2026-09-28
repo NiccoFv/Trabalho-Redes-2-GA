@@ -1,0 +1,7 @@
+results/raw/
+.venv/
+__pycache__/
+.DS_Store
+scripts/visualize.py
+scripts/visualizacao.html
+results/visualizacao.html

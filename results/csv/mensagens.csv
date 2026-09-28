@@ -1,0 +1,12 @@
+protocol,failure_type,run,phase,message_type,packets
+bgp,admin,1,failure,KEEPALIVE,8
+bgp,admin,1,failure,TCP ACK,13
+bgp,admin,1,failure,UPDATE,6
+bgp,admin,1,stable,KEEPALIVE,10
+bgp,admin,1,stable,TCP ACK,10
+ospf,admin,1,failure,Hello,48
+ospf,admin,1,failure,LS Ack,16
+ospf,admin,1,failure,LS Update,17
+ospf,admin,1,stable,Hello,60
+rip,admin,1,failure,Response,24
+rip,admin,1,stable,Response,20

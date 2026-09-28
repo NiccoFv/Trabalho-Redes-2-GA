@@ -1,0 +1,199 @@
+name: redes2-ga
+x-router: &router
+  build:
+    context: .
+    target: router
+  cap_add: [NET_ADMIN, NET_RAW, SYS_ADMIN]
+  sysctls:
+    net.ipv4.ip_forward: 1
+    net.ipv4.conf.all.rp_filter: 0
+    net.ipv4.conf.default.rp_filter: 0
+  volumes:
+    - ./results/raw:/captures
+services:
+  r1:
+    <<: *router
+    volumes:
+      - ./configs/${PROTOCOL:-bgp}/daemons:/etc/frr/daemons:ro
+      - ./configs/${PROTOCOL:-bgp}/r1/frr.conf:/etc/frr/frr.conf:ro
+      - ./results/raw:/captures
+    networks:
+      lan1:
+        ipv4_address: 192.168.1.1
+        interface_name: lan
+      link12:
+        ipv4_address: 10.0.12.1
+        interface_name: ring12
+      link51:
+        ipv4_address: 10.0.51.2
+        interface_name: ring51
+  r2:
+    <<: *router
+    volumes:
+      - ./configs/${PROTOCOL:-bgp}/daemons:/etc/frr/daemons:ro
+      - ./configs/${PROTOCOL:-bgp}/r2/frr.conf:/etc/frr/frr.conf:ro
+      - ./results/raw:/captures
+    networks:
+      lan2:
+        ipv4_address: 192.168.2.1
+        interface_name: lan
+      link12:
+        ipv4_address: 10.0.12.2
+        interface_name: ring12
+      link23:
+        ipv4_address: 10.0.23.1
+        interface_name: ring23
+  r3:
+    <<: *router
+    volumes:
+      - ./configs/${PROTOCOL:-bgp}/daemons:/etc/frr/daemons:ro
+      - ./configs/${PROTOCOL:-bgp}/r3/frr.conf:/etc/frr/frr.conf:ro
+      - ./results/raw:/captures
+    networks:
+      lan3:
+        ipv4_address: 192.168.3.1
+        interface_name: lan
+      link23:
+        ipv4_address: 10.0.23.2
+        interface_name: ring23
+      link34:
+        ipv4_address: 10.0.34.1
+        interface_name: ring34
+  r4:
+    <<: *router
+    volumes:
+      - ./configs/${PROTOCOL:-bgp}/daemons:/etc/frr/daemons:ro
+      - ./configs/${PROTOCOL:-bgp}/r4/frr.conf:/etc/frr/frr.conf:ro
+      - ./results/raw:/captures
+    networks:
+      lan4:
+        ipv4_address: 192.168.4.1
+        interface_name: lan
+      link34:
+        ipv4_address: 10.0.34.2
+        interface_name: ring34
+      link45:
+        ipv4_address: 10.0.45.1
+        interface_name: ring45
+  r5:
+    <<: *router
+    volumes:
+      - ./configs/${PROTOCOL:-bgp}/daemons:/etc/frr/daemons:ro
+      - ./configs/${PROTOCOL:-bgp}/r5/frr.conf:/etc/frr/frr.conf:ro
+      - ./results/raw:/captures
+    networks:
+      lan5:
+        ipv4_address: 192.168.5.1
+        interface_name: lan
+      link45:
+        ipv4_address: 10.0.45.2
+        interface_name: ring45
+      link51:
+        ipv4_address: 10.0.51.1
+        interface_name: ring51
+  h1:
+    build:
+      context: .
+      target: host
+    cap_add: [NET_ADMIN, NET_RAW]
+    command: [sh, -c, "ip route replace default via 192.168.1.1; exec sleep infinity"]
+    networks:
+      lan1:
+        ipv4_address: 192.168.1.10
+  h2:
+    build:
+      context: .
+      target: host
+    cap_add: [NET_ADMIN, NET_RAW]
+    command: [sh, -c, "ip route replace default via 192.168.2.1; exec sleep infinity"]
+    networks:
+      lan2:
+        ipv4_address: 192.168.2.10
+  h3:
+    build:
+      context: .
+      target: host
+    cap_add: [NET_ADMIN, NET_RAW]
+    command: [sh, -c, "ip route replace default via 192.168.3.1; exec sleep infinity"]
+    networks:
+      lan3:
+        ipv4_address: 192.168.3.10
+  h4:
+    build:
+      context: .
+      target: host
+    cap_add: [NET_ADMIN, NET_RAW]
+    command: [sh, -c, "ip route replace default via 192.168.4.1; exec sleep infinity"]
+    networks:
+      lan4:
+        ipv4_address: 192.168.4.10
+  h5:
+    build:
+      context: .
+      target: host
+    cap_add: [NET_ADMIN, NET_RAW]
+    command: [sh, -c, "ip route replace default via 192.168.5.1; exec sleep infinity"]
+    networks:
+      lan5:
+        ipv4_address: 192.168.5.10
+networks:
+  link12:
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.0.12.0/29
+          gateway: 10.0.12.6
+  link23:
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.0.23.0/29
+          gateway: 10.0.23.6
+  link34:
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.0.34.0/29
+          gateway: 10.0.34.6
+  link45:
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.0.45.0/29
+          gateway: 10.0.45.6
+  link51:
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.0.51.0/29
+          gateway: 10.0.51.6
+  lan1:
+    internal: true
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
+          gateway: 192.168.1.254
+  lan2:
+    internal: true
+    ipam:
+      config:
+        - subnet: 192.168.2.0/24
+          gateway: 192.168.2.254
+  lan3:
+    internal: true
+    ipam:
+      config:
+        - subnet: 192.168.3.0/24
+          gateway: 192.168.3.254
+  lan4:
+    internal: true
+    ipam:
+      config:
+        - subnet: 192.168.4.0/24
+          gateway: 192.168.4.254
+  lan5:
+    internal: true
+    ipam:
+      config:
+        - subnet: 192.168.5.0/24
+          gateway: 192.168.5.254

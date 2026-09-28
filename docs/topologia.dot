@@ -1,0 +1,42 @@
+// Gerado com: neato -Tsvg docs/topologia.dot -o docs/topologia.svg
+// Cores dos roteadores = sistemas autônomos do cenário BGP.
+graph topologia {
+  layout=neato; pad=0.3; splines=false; forcelabels=true
+  node [fontname="Helvetica" fontsize=10]
+  edge [fontname="Helvetica" fontsize=9 fontcolor="#333333"]
+
+  node [shape=circle style=filled fontcolor=white fontsize=15 width=0.85 fixedsize=true]
+  R1 [pos="-1.1,-1.5!" fillcolor="#4C72B0" label=<<b>R1</b><br/><font point-size="9">AS65001</font>>]
+  R2 [pos="-1.9,0.4!"  fillcolor="#4C72B0" label=<<b>R2</b><br/><font point-size="9">AS65001</font>>]
+  R3 [pos="0,1.7!"     fillcolor="#DD8452" label=<<b>R3</b><br/><font point-size="9">AS65002</font>>]
+  R4 [pos="1.9,0.4!"   fillcolor="#55A868" label=<<b>R4</b><br/><font point-size="9">AS65003</font>>]
+  R5 [pos="1.1,-1.5!"  fillcolor="#55A868" label=<<b>R5</b><br/><font point-size="9">AS65003</font>>]
+
+  node [shape=box style="rounded,filled" fillcolor="#f2f2f2" fontcolor="#222222" fixedsize=false width=0 fontsize=10]
+  H1 [pos="-1.9,-2.8!" label=<<b>H1</b> 192.168.1.10<br/>LAN 192.168.1.0/24>]
+  H2 [pos="-3.6,0.9!"  label=<<b>H2</b> 192.168.2.10<br/>LAN 192.168.2.0/24>]
+  H3 [pos="0,3.3!"     label=<<b>H3</b> 192.168.3.10<br/>LAN 192.168.3.0/24>]
+  H4 [pos="3.6,0.9!"   label=<<b>H4</b> 192.168.4.10<br/>LAN 192.168.4.0/24>]
+  H5 [pos="1.9,-2.8!"  label=<<b>H5</b> 192.168.5.10<br/>LAN 192.168.5.0/24>]
+
+  edge [color="#999999" penwidth=1.5]
+  R1 -- H1; R2 -- H2; R3 -- H3; R4 -- H4; R5 -- H5
+
+  edge [color="#555555" penwidth=3]
+  R1 -- R2
+  R2 -- R3
+  R3 -- R4
+  R4 -- R5
+  R5 -- R1 [color="#C44E52" style=dashed]
+
+  n12 [shape=plaintext style="" fontcolor="#333333" fontsize=9 pos="-2.05,-0.55!" label="10.0.12.0/29"]
+  n23 [shape=plaintext style="" fontcolor="#333333" fontsize=9 pos="-1.6,1.15!" label="10.0.23.0/29"]
+  n34 [shape=plaintext style="" fontcolor="#333333" fontsize=9 pos="1.6,1.15!" label="10.0.34.0/29"]
+  n45 [shape=plaintext style="" fontcolor="#333333" fontsize=9 pos="2.05,-0.55!" label="10.0.45.0/29"]
+  n51 [shape=plaintext style="" fontcolor="#333333" fontsize=9 pos="0,-1.75!" label="10.0.51.0/29"]
+
+  legenda [shape=plaintext style="" pos="0,-3.4!" fontsize=10 label=<
+    <table border="0" cellspacing="6"><tr>
+    <td>━ enlace do anel (/29)</td><td><font color="#999999">━</font> LAN (/24), gateway .1 no roteador</td>
+    <td><font color="#C44E52">╍</font> R1–R5: enlace das falhas e do atraso</td></tr></table>>]
+}

@@ -1,0 +1,4 @@
+protocol,next_hop_r1,path,rtt_mean_ms,rtt_p95_ms,loss_pct
+bgp,10.0.51.1,R1>R5>R4,60.52,60.9,0.0
+ospf,10.0.12.2,R1>R2>R3>R4,0.1503,0.17945,0.0
+rip,10.0.51.1,R1>R5>R4,60.535000000000004,60.9,0.0
